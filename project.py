@@ -3,7 +3,7 @@
 """
 Created on Sun Mar 18 16:24:42 2018
 
-@author: 
+@author: Bing Miu
 """
 # Movie Recommendation Lab
 import numpy as np
