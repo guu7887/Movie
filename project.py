@@ -47,6 +47,11 @@ sns.heatmap(corr, mask=mask, cmap=cmap, vmax=.3, center=0,
 #view data
 data_all.head()
 data_all.columns
+data_all.info()
+
+# convert 'gender' from string to category
+data_all.gender = data_all.gender.astype('category')
+
 
 #analyze data
 
