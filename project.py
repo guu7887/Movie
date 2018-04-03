@@ -10,6 +10,9 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn import datasets, linear_model
+from sklearn.model_selection import train_test_split
+from sklearn.model_selection import KFold # import KFold
 
 #upload data
 data_users = pd.read_csv("users.csv")
