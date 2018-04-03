@@ -82,6 +82,20 @@ data_new = pd.concat([data_all[['userID', 'age', 'gender', 'movieID', 'name', 'y
 data_X = pd.concat([data_all[['age', 'gender', 'year']], df_genre], axis=1)
 data_y = data_all['rating']
 
+# create training and testing vars
+X_train, X_test, y_train, y_test = train_test_split(data_X, data_y, test_size=0.2, random_state=1234)
+print (X_train.shape, y_train.shape)
+print (X_test.shape, y_test.shape)
+
+# create Cross-Validation K-Fold
+kf = KFold(n_splits=10, random_state=1234, shuffle=True)
+for train_index, test_index in kf.split(X_train):
+    X_CV_train, X_CV_test = X_train[train_index], X_train[test_index]
+    y_CV_train, y_CV_test = y_train[train_index], y_train[test_index]
+    # implement regression part
+
+
+
 
 
 
