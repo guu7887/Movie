@@ -26,3 +26,33 @@ plt.yticks(np.arange(0, 81, 10))
 plt.legend((p1[0], p2[0]), ('Men', 'Women'))
 
 plt.show()
+
+＃＃＃＃
+It is not clear to me the advantage of using F_regression in feature selection.
+using the mtcars dataset from R:
+
+import pandas as pd
+import numpy as np
+from sklearn import feature_selection
+from sklearn.linear_model import LinearRegression
+
+#....load mtcars dataset into a pandas dataframe called "df", not shown here for conciseness
+
+# only using these numerical columns as features ['mpg', 'disp', 'drat', 'wt']
+# using this column as the label:  ['qsec']
+
+model = feature_selection.SelectKBest(score_func=feature_selection.f_regression,\
+                                      k=4)
+
+results = model.fit(df[columns], df['qsec'])
+
+print results.scores_
+print results.pvalues_
+
+# Using just correlation coefficient:
+
+columns = ['mpg', 'disp', 'drat', 'wt']
+for col in columns:
+    lm = LinearRegression(fit_intercept=True)
+    lm.fit(df[[col]], df['qsec'])
+    print lm.score(df[[col]], df['qsec'])
