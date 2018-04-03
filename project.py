@@ -75,6 +75,10 @@ df_genre = pd.concat([df_genre1,df_genre2,df_genre3]).groupby(level=0).any().ast
 
 data_new = pd.concat([data_all[['userID', 'age', 'gender', 'movieID', 'name', 'year']], df_genre,data_all['rating']], axis=1)
 
+data_X = pd.concat([data_all[['age', 'gender', 'year']], df_genre], axis=1)
+data_y = data_all['rating']
+
+
 
 
 
