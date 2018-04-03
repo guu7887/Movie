@@ -49,10 +49,6 @@ data_all.head()
 data_all.columns
 data_all.info()
 
-# convert 'gender' from string to category
-data_all.gender = data_all.gender.astype('category')
-
-
 #analyze data
 
 data_all['age'].describe()
@@ -75,16 +71,17 @@ sns.heatmap(corrmat, square=True);
 data_all.count()
 data_all.isnull().sum()
 
-# Create a set of dummy variables from the genre variable
+# Create a set of dummy variables from the gender and genre variable
+df_gender = pd.get_dummies(data_all['gender'])
 df_genre1 = pd.get_dummies(data_all['genre1'])
 df_genre2 = pd.get_dummies(data_all['genre2'])
 df_genre3 = pd.get_dummies(data_all['genre3'])
 
 df_genre = pd.concat([df_genre1,df_genre2,df_genre3]).groupby(level=0).any().astype(int)
 
-data_new = pd.concat([data_all[['userID', 'age', 'gender', 'movieID', 'name', 'year']], df_genre,data_all['rating']], axis=1)
+data_new = pd.concat([data_all[['userID', 'age', 'movieID', 'name', 'year']], df_gender, df_genre,data_all['rating']], axis=1)
 
-data_X = pd.concat([data_all[['age', 'gender', 'year']], df_genre], axis=1)
+data_X = pd.concat([data_all[['age', 'year']], df_gender, df_genre], axis=1)
 data_y = data_all['rating']
 
 # create training and testing vars
