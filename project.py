@@ -81,7 +81,7 @@ df_genre = pd.concat([df_genre1,df_genre2,df_genre3]).groupby(level=0).any().ast
 
 data_new = pd.concat([data_all[['userID', 'age', 'movieID', 'name', 'year']], df_gender, df_genre,data_all['rating']], axis=1)
 
-data_X = pd.concat([data_all[['age', 'year']], df_gender, df_genre], axis=1)
+data_X = pd.concat([data_all[['age', 'year']], df_gender, df_genre], axis=1) # or w/o 'year'???
 data_y = data_all['rating']
 
 # create training and testing vars
