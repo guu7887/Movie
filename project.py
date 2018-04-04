@@ -9,10 +9,13 @@ Created on Sun Mar 18 16:24:42 2018
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.cbook as cbook
 import seaborn as sns
 from sklearn import datasets, linear_model
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import KFold # import KFold
+from sklearn import feature_selection
+from sklearn.linear_model import LinearRegression
 
 #upload data
 data_users = pd.read_csv("users.csv")
