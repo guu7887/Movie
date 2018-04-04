@@ -98,8 +98,8 @@ print (X_test.shape, y_test.shape)
 # create Cross-Validation K-Fold
 kf = KFold(n_splits=10, random_state=1234, shuffle=True)
 for train_index, test_index in kf.split(X_train):
-    X_CV_train, X_CV_test = X_train[train_index], X_train[test_index]
-    y_CV_train, y_CV_test = y_train[train_index], y_train[test_index]
+    X_CV_train, X_CV_test = X_train.iloc[train_index], X_train.iloc[test_index]
+    y_CV_train, y_CV_test = y_train.iloc[train_index], y_train.iloc[test_index]
     # implement regression part
 
 lasso=Lasso(alpha=0.01, fit_intercept=False)
