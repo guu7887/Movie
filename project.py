@@ -17,7 +17,7 @@ from sklearn.model_selection import KFold # import KFold
 from sklearn import feature_selection
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
-from sklearn.linear_model import Lasso
+from sklearn.linear_model import Ridge, Lasso
 from sklearn.linear_model import LassoCV
 
 #upload data
@@ -102,28 +102,19 @@ for train_index, test_index in kf.split(X_train):
     y_CV_train, y_CV_test = y_train[train_index], y_train[test_index]
     # implement regression part
 
-alphas = np.logspace(-4, -1, 10)
-scores = np.empty_like(alphas)
-for i,a in enumerate(alphas):
-    lasso = linear_model.Lasso()
-    lasso.set_params(alpha=a)
-    lasso.fit(X_train, y_train)
-    scores[i] = lasso.score(X_test, y_test)
-    print(a, lasso.coef_)
+lasso=Lasso(alpha=0.01, fit_intercept=False)
+lasso.fit(X_train, y_train)
+y_est=lasso.predict(X_test)
+mse=np.mean(np.square(y_test-y_est))
+print(mse)
+print(lasso.coef_)
 
-lassocv = linear_model.LassoCV()
-lassocv.fit(data_X, data_y)
-lassocv_score = lassocv.score(data_X, data_y)
-lassocv_alpha = lassocv.alpha_
-print('CV', lassocv.coef_)
-
-plt.plot(alphas, scores, '-ko')
-plt.axhline(lassocv_score, color='b', ls='--')
-plt.axvline(lassocv_alpha, color='b', ls='--')
-plt.xlabel(r'$\alpha$')
-plt.ylabel('Score')
-plt.xscale('log')
-sns.despine(offset=15)
+ridge=Ridge(alpha=0.1, fit_intercept=False)
+ridge.fit(X_train, y_train)
+y_est=ridge.predict(X_test)
+mse=np.mean(np.square(y_test-y_est))
+print(mse)
+print(ridge.coef_)
 
 
 
