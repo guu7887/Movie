@@ -16,6 +16,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.model_selection import KFold # import KFold
 from sklearn import feature_selection
 from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.linear_model import Lasso
 from sklearn.linear_model import LassoCV
 
