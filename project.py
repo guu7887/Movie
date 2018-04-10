@@ -102,13 +102,19 @@ for train_index, test_index in kf.split(X_train):
     y_CV_train, y_CV_test = y_train.iloc[train_index], y_train.iloc[test_index]
     # implement regression part
 
+
 # Create linear regression object
 lm = linear_model.LinearRegression()
 
 # Train the model using the training sets
 lm.fit(X_train, y_train)
+lm.coef_
 
+# Test the model using the test sets
+a = lm.predict (X_test)
 
+# Test linear regression model using MSE 
+np.mean((a - y_test)**2) # 1.15 for the base Lm model
 
 lasso=Lasso(alpha=0.01, fit_intercept=False)
 lasso.fit(X_train, y_train)
