@@ -129,7 +129,6 @@ ridgecv = linear_model.RidgeCV(alphas=alphas, scoring=None, cv=10)
 ridgecv.fit(data_X, data_y)
 ridgecv_score = ridgecv.score(data_X, data_y)
 ridgecv_alpha = ridgecv.alpha_
-print('CV', ridgecv.coef_)
 ridgecv_alpha
 
 lasso=Lasso(alpha=0.0003)
