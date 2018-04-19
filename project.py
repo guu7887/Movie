@@ -146,6 +146,15 @@ print(mse)
 print(ridge.coef_)
 
 
+rating_year=data_all.groupby('year')
+means=rating_year.mean()
+plt.scatter(means.index, means['rating'])
+plt.show()
+
+rating_age=data_all.groupby('age')
+means=rating_age.mean()
+plt.scatter(means.index, means['rating'])
+plt.show()
 
 
 
