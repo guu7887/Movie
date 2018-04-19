@@ -116,14 +116,30 @@ a = lm.predict (X_test)
 # Test linear regression model using MSE 
 np.mean((a - y_test)**2) # 1.15 for the base Lm model
 
-lasso=Lasso(alpha=0.01, fit_intercept=False)
+alphas = np.logspace(-5, -2, 1000)
+lassocv = linear_model.LassoCV(alphas=alphas, cv=10, random_state=1234)
+lassocv.fit(data_X, data_y)
+lassocv_score = lassocv.score(data_X, data_y)
+lassocv_alpha = lassocv.alpha_
+lassocv_alpha
+
+
+alphas = np.linspace(9,11,150)
+ridgecv = linear_model.RidgeCV(alphas=alphas, scoring=None, cv=10)
+ridgecv.fit(data_X, data_y)
+ridgecv_score = ridgecv.score(data_X, data_y)
+ridgecv_alpha = ridgecv.alpha_
+print('CV', ridgecv.coef_)
+ridgecv_alpha
+
+lasso=Lasso(alpha=0.0003)
 lasso.fit(X_train, y_train)
 y_est=lasso.predict(X_test)
 mse=np.mean(np.square(y_test-y_est))
 print(mse)
 print(lasso.coef_)
 
-ridge=Ridge(alpha=0.1, fit_intercept=False)
+ridge=Ridge(alpha=9.7)
 ridge.fit(X_train, y_train)
 y_est=ridge.predict(X_test)
 mse=np.mean(np.square(y_test-y_est))
