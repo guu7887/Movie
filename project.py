@@ -19,6 +19,8 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.linear_model import Ridge, Lasso
 from sklearn.linear_model import LassoCV
+import statsmodels.formula.api as smf
+import statsmodels.api as sm
 
 #upload data
 data_users = pd.read_csv("users.csv")
@@ -100,21 +102,73 @@ kf = KFold(n_splits=10, random_state=1234, shuffle=True)
 for train_index, test_index in kf.split(X_train):
     X_CV_train, X_CV_test = X_train.iloc[train_index], X_train.iloc[test_index]
     y_CV_train, y_CV_test = y_train.iloc[train_index], y_train.iloc[test_index]
-    # implement regression part
 
+#Drop M (only include F in the model)
+X_train = X_train.drop ('M', 1)
+X_test = X_test.drop('M', 1)    
 
-# Create linear regression object
-lm = linear_model.LinearRegression()
-
+#Linear regression
 # Train the model using the training sets
-lm.fit(X_train, y_train)
-lm.coef_
+X = sm.add_constant(X_train)
+olsmod = sm.OLS(y_train, X).fit()            
+print(olsmod.summary())
 
 # Test the model using the test sets
-a = lm.predict (X_test)
+X2 = sm.add_constant(X_test)
+ypred = olsmod.predict(X2)
 
 # Test linear regression model using MSE 
-np.mean((a - y_test)**2) # 1.15 for the base Lm model
+np.mean((ypred - y_test)**2)
+
+#Stepwise Selection:
+
+#Drop Musical
+
+Xa = X.drop('Musical', 1)
+X2a= X2.drop('Musical', 1)
+olsmod = sm.OLS(y_train, Xa).fit()
+print(olsmod.summary())
+ypred = olsmod.predict(X2a)
+MSE = np.mean((ypred - y_test)**2)
+print(MSE)
+
+#Drop Musical+ Mystery
+Xb = Xa.drop('Mystery', 1)
+X2b= X2a.drop('Mystery', 1)
+olsmod = sm.OLS(y_train, Xb).fit()
+print(olsmod.summary())
+ypred = olsmod.predict(X2b)
+MSE = np.mean((ypred - y_test)**2)
+print(MSE)
+
+#Drop Musical+ Mystery+Adventure
+Xc = Xb.drop('Adventure', 1)
+X2c= X2b.drop('Adventure', 1)
+olsmod = sm.OLS(y_train, Xc).fit()
+print(olsmod.summary())
+ypred = olsmod.predict(X2c)
+MSE = np.mean((ypred - y_test)**2)
+print(MSE)
+
+#Drop Musical+ Mystery+Adventure+F
+Xd = Xc.drop('F', 1)
+X2d= X2c.drop('F', 1)
+olsmod = sm.OLS(y_train, Xd).fit()
+print(olsmod.summary())
+ypred = olsmod.predict(X2d)
+MSE = np.mean((ypred - y_test)**2)
+print(MSE)
+
+#Drop Musical+ Mystery+Adventure+F+age
+
+Xe = Xd.drop('age', 1)
+X2e= X2d.drop('age', 1)
+olsmod = sm.OLS(y_train, Xe).fit()
+print(olsmod.summary())
+ypred = olsmod.predict(X2e)
+MSE = np.mean((ypred - y_test)**2)
+print(MSE)
+
 
 alphas = np.logspace(-5, -2, 1000)
 lassocv = linear_model.LassoCV(alphas=alphas, cv=10, random_state=1234)
