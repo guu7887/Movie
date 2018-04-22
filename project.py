@@ -210,6 +210,101 @@ means=rating_age.mean()
 plt.scatter(means.index, means['rating'])
 plt.show()
 
+# Matrix Factorization
+df = data_all.pivot(index='userID', columns='movieID', values='rating')
+
+"""
+@INPUT:
+    R     : a matrix to be factorized, dimension N x M
+    P     : an initial matrix of dimension N x K
+    Q     : an initial matrix of dimension M x K
+    K     : the number of latent features
+    steps : the maximum number of steps to perform the optimisation
+    alpha : the learning rate
+    beta  : the regularization parameter
+@OUTPUT:
+    the final matrices P and Q
+"""
+
+def matrix_factorization(data, df, R, P, Q, K, steps=100, alpha=0.01, beta=0.25):
+    indices = range(data.shape[0])
+    indices_train, indices_test = train_test_split(indices, test_size=0.1, random_state=123)
+    Q = Q.T
+    e = 100*len(indices_test)
+    P_temp = P.copy()
+    Q_temp = Q.copy()
+    for step in range(steps):
+        for k in indices_train:
+            uid = data.iloc[k,0]
+            mid = data.iloc[k,3]
+            i = df.index.get_loc(uid)
+            j = df.columns.get_loc(mid)
+            eij = R[i][j] - np.dot(P_temp[i,:],Q_temp[:,j])
+            for k in range(K):
+                P_temp[i][k] = max(P_temp[i][k] + alpha * (2 * eij * Q_temp[k][j] - beta * P_temp[i][k]),0)
+                Q_temp[k][j] = max(Q_temp[k][j] + alpha * (2 * eij * P_temp[i][k] - beta * Q_temp[k][j]),0)
+
+    
+        #eR = np.dot(P,Q)
+        print(step)
+
+        e_temp = 0
+        for k in indices_test:
+            uid = data.iloc[k,0]
+            mid = data.iloc[k,3]
+            i = df.index.get_loc(uid)
+            j = df.columns.get_loc(mid)
+            e_temp = e_temp + pow(R[i][j] - np.dot(P_temp[i,:],Q_temp[:,j]), 2)
+#                    for k in range(K):
+#                        e = e + (beta/2) * ( pow(P[i][k],2) + pow(Q[k][j],2) )
+        print(e_temp/len(indices_test))
+#        if (e_temp/31620) < 0.1:
+#            break
+        if e_temp < e:
+            if e-e_temp < 0.00001:
+                break
+            alpha = alpha*1.05
+            P = P_temp.copy()
+            Q = Q_temp.copy()
+            e = e_temp
+            temp = 0
+        else:
+            alpha = alpha*0.5
+            P_temp = P.copy()
+            Q_temp = Q.copy()
+            temp += 1
+        if temp == 3:
+            break
+    return P, Q.T
+
+R = df.values
+
+N = len(R)
+M = len(R[0])
+K = 15
+
+np.random.seed(123)
+P = np.random.rand(N,K)
+Q = np.random.rand(M,K)
+
+nP, nQ = matrix_factorization(data_all.iloc[indices_train], df, R, P, Q, K)
+nR = np.dot(nP, nQ.T)
+
+e = 0
+r_test = []
+r_pred = []
+for k in indices_test:
+    uid = data_all.iloc[k,0]
+    mid = data_all.iloc[k,3]
+    i = df.index.get_loc(uid)
+    j = df.columns.get_loc(mid)
+    e += (R[i,j]-nR[i,j])**2
+    r_test.append(R[i,j]) 
+    r_pred.append(nR[i,j])
+    
+
+mse = e/len(indices_test)
+
 d = {'test': r_test, 'predict': r_pred}
 df_res = pd.DataFrame(data=d)
 df_res.groupby('test').mean()
