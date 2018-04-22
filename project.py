@@ -309,6 +309,11 @@ d = {'test': r_test, 'predict': r_pred}
 df_res = pd.DataFrame(data=d)
 df_res.groupby('test').mean()
 
+r_res = [r_test - r_pred for r_test,r_pred in zip(r_test,r_pred)]
+fig = sns.stripplot(np.asarray(r_test), np.asarray(r_res), jitter=True, color='g')
+fig.set(xlabel='True Raing', ylabel='residual')
+plt.show()
+
 
 
 ### test#######
