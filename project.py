@@ -210,7 +210,9 @@ means=rating_age.mean()
 plt.scatter(means.index, means['rating'])
 plt.show()
 
-
+d = {'test': r_test, 'predict': r_pred}
+df_res = pd.DataFrame(data=d)
+df_res.groupby('test').mean()
 
 
 
